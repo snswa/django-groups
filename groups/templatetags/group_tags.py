@@ -8,6 +8,24 @@ from django.db.models.query import QuerySet
 register = template.Library()
 
 
+@register.filter
+def ismemberofgroup(user, group):
+    """Filter to determine if user is a member of a group.
+
+    Example usage::
+
+        {% load group_tags %}
+        {% if user|ismemberofgroup:group %}
+            You are a member.
+        {% else %}
+            You are not a member.
+        {% endif %}
+    """
+    if group is None:
+        return False
+    return group.user_is_member(user)
+
+
 class GroupURLNode(template.Node):
     def __init__(self, view_name, group, kwargs, asvar):
         self.view_name = view_name
